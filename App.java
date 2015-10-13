@@ -6,7 +6,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.util.Calendar;
-
+import java.util.Iterator;
 
 public class App
 {
@@ -14,9 +14,21 @@ public class App
     public static void main(String[] args) {
         
         try{
-        Document doc = Jsoup.connect("http://butlercatering.se/einstein").get();
-        
-        System.out.println(getTodaysMenu(doc));
+            Document doc = Jsoup.connect("http://butlercatering.se/einstein").get();
+            
+            int done = 0;
+            for(String s : args)
+            {
+                if(s.equals("-w") || done != 0)
+                {
+                    System.out.println(getWeekMenu(doc));
+                    done = 1;
+                }
+            }
+            if(done == 0)
+            {
+                System.out.println(getTodaysMenu(doc));
+            }
         }
         catch (Exception e)
         {
@@ -32,14 +44,11 @@ public class App
     private static String getTodaysMenu(Document d)
     {
         
-        Calendar c = Calendar.getInstance();
-        int day_of_week = c.get(Calendar.DAY_OF_WEEK) -1;
-        
         Elements es = d.getElementsByClass("field-day");
         for(Element e: es)
         {
             Element e2 = e.getElementsByClass("field-label").get(0);
-            if(weekdayToNr(e2.text())== day_of_week )
+            if(weekdayToNr(e2.text())== getDay() )
             {
                 Element fish = e2.nextElementSibling();
                 Element meat = fish.nextElementSibling();
@@ -54,6 +63,45 @@ public class App
             
         }
         return "";
+    }
+    
+    private static String getWeekMenu(Document d)
+    {
+        Elements es = d.getElementsByClass("field-day");
+        for(Element e: es)
+        { 
+                Element e2 = e.getElementsByClass("field-label").get(0);
+                Element fish = e2.nextElementSibling();
+                Element meat = fish.nextElementSibling();
+                if(weekdayToNr(e2.text())== getDay() )
+                {
+                    System.out.print("=>");
+                }
+                System.out.println(e2.text()+ "\n");
+                System.out.println("Fisk:");
+                System.out.println(fish.text()+ "\n");
+                System.out.println("Kött:");
+                System.out.println(meat.text() + "\n");
+                System.out.println("---------------------------------\n\n");
+                
+                
+        }
+        return "";
+    }
+    
+    private static int getDay()
+    {
+        Calendar c = Calendar.getInstance();
+        if(c.get(Calendar.HOUR_OF_DAY) >= 13)
+        {
+            return c.get(Calendar.DAY_OF_WEEK);
+        }
+        else
+        {
+            return c.get(Calendar.DAY_OF_WEEK)-1;
+        }
+        
+        
     }
     
     private static int weekdayToNr(String s)
