@@ -18,9 +18,18 @@ public class App
         
         System.out.println(getTodaysMenu(doc));
         }
+        catch (java.net.UnknownHostException e) 
+        {
+            System.out.println("Error: No network connection available");
+            System.exit(0);
+        }
         catch (Exception e)
         {
-            System.out.println(e.toString());
+            if (e instanceof java.net.UnknownHostException) {
+                System.out.println("Error: Unknown host "+e.getMessage());
+            } else {
+                System.out.println(e.toString());
+            }
             System.exit(0); 
         }
     }
