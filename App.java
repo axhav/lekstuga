@@ -25,7 +25,11 @@ public class App
         }
         catch (Exception e)
         {
-            System.out.println(e.toString());
+            if (e instanceof java.net.UnknownHostException) {
+                System.out.println("Error: Unknown host "+e.getMessage());
+            } else {
+                System.out.println(e.toString());
+            }
             System.exit(0); 
         }
     }
