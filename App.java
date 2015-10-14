@@ -4,9 +4,12 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
+import java.io.IOException; 
 import java.util.Calendar;
-import java.util.Iterator;
+
+
+import java.lang.Thread;
+
 
 public class App
 {
@@ -24,11 +27,17 @@ public class App
                     System.out.println(getWeekMenu(doc));
                     done = 1;
                 }
+                if(s.equals("-i") || done != 0)
+                {
+                    System.out.println(getTodaysMenu(doc,1));
+                    done = 1;
+                }
             }
             if(done == 0)
             {
-                System.out.println(getTodaysMenu(doc));
+                System.out.println(getTodaysMenu(doc,0));
             }
+            
         }
         catch (Exception e)
         {
@@ -39,9 +48,11 @@ public class App
             }
             System.exit(0); 
         }
+        
+        
     }
     
-    private static String getTodaysMenu(Document d)
+    private static String getTodaysMenu(Document d,int image)
     {
         
         Elements es = d.getElementsByClass("field-day");
@@ -57,8 +68,15 @@ public class App
                 System.out.println("Fisk:");
                 System.out.println(fish.text()+ "\n");
                 System.out.println("Kött:");
-                System.out.println(meat.text());
+                System.out.println(meat.text() + "\n");
                 
+                if(image == 1)
+                {
+                    ShowMeal f = new ShowMeal(getShortMeal(fish.text()));
+                    ShowMeal m = new ShowMeal(getShortMeal(meat.text()));
+                    f.start();
+                    m.start();
+                }
             }
             
         }
@@ -123,4 +141,26 @@ public class App
         }
         
     }
+    
+    private static String getShortMeal(String s)
+    {
+        String[] ss = s.split(" ");
+        String res = "";
+        int i = 0;
+        while(i < ss.length-1 )
+        {
+            if (ss[i].equals("med") || ss[i].equals("serveras"))
+            {
+                i = ss.length; 
+            }
+            else
+            {
+                res = res + ss[i] + " " ;
+                i++;
+            }
+            
+        }
+        return res;
+    }
+
 }
