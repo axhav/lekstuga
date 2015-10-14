@@ -29,7 +29,6 @@ public class App
                 }
                 if(s.equals("-i") && done == 0)
                 {
-                    System.out.println("asdasd");
                     System.out.println(getTodaysMenu(doc,1));
                     done = 1;
                 }
