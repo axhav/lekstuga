@@ -1,0 +1,56 @@
+<project name="lekstuga" default="dist" basedir=".">
+  <description>
+    Build file for lekstuga  
+  </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="."/>
+  <property name="build" location="build"/>
+  <property name="dist" location="dist"/>
+  <property name="manifest-file" location="./manifest.mf" />
+  <path id="classpath">
+    <fileset dir="${src}" includes="*.jar"/>
+  </path>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the directory structure used by compile -->
+    <mkdir dir="${build}"/>
+    <mkdir dir="${dist}"/>
+  </target>
+
+  <target name="compile" depends="init"
+        description="compile the source">
+    <!-- Compile the java code from ${src} into ${build} -->
+    <javac srcdir="${src}" destdir="${build}" 
+      includeantruntime="false" encoding="iso-8859-1" 
+      classpathref="classpath">
+    </javac>
+  </target>
+
+  <target name="dist" depends="compile"
+        description="generate the distribution">
+    <!-- Create the distribution directory -->
+    <jar manifest="${manifest-file}" 
+      jarfile="${dist}/einstein-${DSTAMP}.jar" 
+      basedir="${build}">
+      <fileset dir="${build}" includes="**/*.class" />
+      <zipgroupfileset dir="${src}" includes="jsoup-1.8.3.jar"/>
+    </jar>
+  </target>
+
+  <target name="run" depends="dist">
+  <!-- Run the java program -->
+    <java jar="${dist}/einstein-${DSTAMP}.jar" fork="true"/>
+  </target>
+
+  <target name="clean"
+        description="clean up">
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+   <target name="main" depends="clean,run"/>
+</project>
+
