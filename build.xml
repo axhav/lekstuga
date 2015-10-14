@@ -8,7 +8,7 @@
   <property name="dist" location="dist"/>
   <property name="manifest-file" location="./manifest.mf" />
   <path id="classpath">
-    <fileset dir="${src}" includes="*.jar"/>
+    <fileset dir="${src}" includes="jsoup-1.8.3.jar"/>
   </path>
 
   <target name="init">
