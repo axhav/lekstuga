@@ -22,13 +22,14 @@ public class App
             int done = 0;
             for(String s : args)
             {
-                if(s.equals("-w") || done != 0)
+                if(s.equals("-w") && done == 0)
                 {
                     System.out.println(getWeekMenu(doc));
                     done = 1;
                 }
-                if(s.equals("-i") || done != 0)
+                if(s.equals("-i") && done == 0)
                 {
+                    System.out.println("asdasd");
                     System.out.println(getTodaysMenu(doc,1));
                     done = 1;
                 }
