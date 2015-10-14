@@ -3,6 +3,7 @@
 create a jar by first compiling
 
 javac -cp jsoup-1.8.3.jar ShowMeal.java App.java
+
 jar -cfme einstein.jar manifest.mf App App.class ShowMeal.class jsoup-1.8.3.jar
 
 note for linux users this is created with ANSI character encodeing 
