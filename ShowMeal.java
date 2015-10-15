@@ -28,7 +28,7 @@ class ShowMeal
     public static Image showMeal() throws Exception
     {
         String format = meal.replaceAll(" ","+");
-        String search = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+format;
+        String search = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+format+"+-site:butlercatering.se";
         
         Document doc = Jsoup.connect(search).get();
         String JSON = doc.body().text();
