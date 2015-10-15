@@ -26,7 +26,7 @@ class Main
                     Image f = new ShowMeal(menu.getTodaysMenu().getShortFish()).showMeal();
                     Image m = new ShowMeal(menu.getTodaysMenu().getShortMeat()).showMeal();
                     menu.printTodaysMenu();
-                    displayMeal(f,m,menu.getTodaysMenu().getShortFish(),menu.getTodaysMenu().getShortMeat());
+                    displayMeal(f,m,menu.getTodaysMenu().Day,menu.getTodaysMenu().getShortFish(),menu.getTodaysMenu().getShortMeat());
     
                 }
                 catch (Exception e ) {}
@@ -39,7 +39,7 @@ class Main
         }
     }
     
-    private static void displayMeal(Image f, Image m,String fish,String meat)
+    private static void displayMeal(Image f, Image m,String day,String fish,String meat)
     {
         BorderLayout layout = new BorderLayout();
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -48,6 +48,8 @@ class Main
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(800, 450);
         frame.setTitle("Einstein");
+        
+        frame.add(new JLabel(day),BorderLayout.NORTH);
         
         JPanel ic = new JPanel();
         ic.setLayout(new GridLayout(1,2));

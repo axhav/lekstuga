@@ -87,7 +87,7 @@ public class App
                 Element fish = e2.nextElementSibling();
                 Element meat = fish.nextElementSibling();
                 
-                Menu[i] = new Meal(e2.text(),fish.text(),meat.text());
+                Menu[i] = new Meal(e2.text(),meat.text(),fish.text());
                 
         }
     }
