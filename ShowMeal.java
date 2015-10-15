@@ -10,6 +10,8 @@ import java.lang.Class;
 import java.lang.Thread;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.net.URL;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,7 +30,7 @@ class ShowMeal extends Thread
     public void run()
     {
         try{
-        displayMeal(showMeal(meal));
+        displayMeal(showMeal(meal),meal);
             
         }
         catch(Exception e){}
@@ -53,7 +55,7 @@ class ShowMeal extends Thread
         return resu;
     }
     
-    private static void displayMeal(String path)
+    private static void displayMeal(String path,String Name)
     {
         Image image = null;
         try {
@@ -62,12 +64,15 @@ class ShowMeal extends Thread
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+        JFrame.setDefaultLookAndFeelDecorated(true);
         JFrame frame = new JFrame();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(400, 400);
+        frame.setTitle(Name);
         JLabel label = new JLabel(new ImageIcon(image));
+        JLabel text = new JLabel();
         frame.add(label);
+        frame.pack();
         frame.setVisible(true);
     }
     
