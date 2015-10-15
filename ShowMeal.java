@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import javax.script.*;
 
+import java.lang.Class;
 import java.lang.Thread;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -36,24 +37,19 @@ class ShowMeal extends Thread
     private static String showMeal(String s) throws Exception
     {
         String format = s.replaceAll(" ","+");
-        //format = format.replaceAll("å","%C3%A5");
-        //format = format.replaceAll("ä","%C3%A4");
-        //format = format.replaceAll("ö","%C3%B6");
         String search = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+format;
         
         Document doc = Jsoup.connect(search).get();
         String JSON = doc.body().text();
-        //System.out.println(JSON);
         
-        String scriptFile = new Scanner(new File("./jsonhelper.js")).useDelimiter("\\Z").next();
+        //String scriptFile = new Scanner(new File("./jsonhelper.js")).useDelimiter("\\Z").next();
         ScriptEngineManager factory = new ScriptEngineManager();
         ScriptEngine engine = factory.getEngineByName("JavaScript");
-        engine.eval(scriptFile);
+        engine.eval(JS());
         
         Invocable inv = (Invocable) engine;
         
         String resu = (String) inv.invokeFunction("getImageUrl", JSON);
-        
         return resu;
     }
     
@@ -73,5 +69,11 @@ class ShowMeal extends Thread
         JLabel label = new JLabel(new ImageIcon(image));
         frame.add(label);
         frame.setVisible(true);
+    }
+    
+    
+    private static String JS()
+    {
+        return "function getImageUrl(json){var myArr = JSON.parse(json);return myArr[\"responseData\"][\"results\"][0][\"unescapedUrl\"];}";
     }
 }

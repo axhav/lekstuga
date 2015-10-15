@@ -15,11 +15,11 @@ public class App
 {
     
     public static void main(String[] args) {
-        
         try{
             Document doc = Jsoup.connect("http://butlercatering.se/einstein").get();
             
             int done = 0;
+            
             for(String s : args)
             {
                 if(s.equals("-w") && done == 0)
