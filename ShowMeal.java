@@ -15,6 +15,10 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException; 
    
+import java.nio.charset.Charset;
+import java.nio.ByteBuffer;   
+import java.nio.charset.StandardCharsets;   
+ 
 class ShowMeal 
 {
     private static String meal;
@@ -28,8 +32,10 @@ class ShowMeal
     public static Image showMeal() throws Exception
     {
         String format = meal.replaceAll(" ","+");
-        String search = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+format+"+-site:butlercatering.se";
-        
+        format = format.toLowerCase().replaceAll("å","%C3%A5");
+        format = format.replaceAll("ä","%C3%A4");
+        format = format.replaceAll("ö","%C3%B6");
+        String search = "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q="+format+"+-site:butlercatering.se+-site:youtube.*";
         Document doc = Jsoup.connect(search).get();
         String JSON = doc.body().text();
         
@@ -62,6 +68,7 @@ class ShowMeal
     
     private static String JS()
     {
+        //print(JSON.stringify(myArr,null,2));
         return "function getImageUrl(json){var myArr = JSON.parse(json);return myArr[\"responseData\"][\"results\"][0][\"unescapedUrl\"];}";
     }
 }
