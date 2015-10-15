@@ -13,33 +13,16 @@ import java.lang.Thread;
 
 public class App
 {
-    private static Meal[] Menu;
+    private static Meal[] Menu;    
+    private static App instance = null;
     
-    public static void main(String[] args) {
+    protected App()
+    {
         Menu = new Meal[5];
-        try{
+        try
+        {
             Document doc = Jsoup.connect("http://butlercatering.se/einstein").get();
             getMenu(doc);
-            int done = 0;
-            
-            for(String s : args)
-            {
-                if(s.equals("-w") && done == 0)
-                {
-                    printWeekMenu();
-                    done = 1;
-                }
-                if(s.equals("-i") && done == 0)
-                {
-                    printTodaysMenu(1);
-                    done = 1;
-                }
-            }
-            if(done == 0)
-            {
-                printTodaysMenu(0);;
-            }
-            
         }
         catch (Exception e)
         {
@@ -50,26 +33,36 @@ public class App
             }
             System.exit(0); 
         }
-        
-        
     }
     
-    private static void printTodaysMenu(int image)
+    public static App getInstance()
+    {
+        if(instance == null)
+        {
+            instance = new App();
+        }
+        return instance;
+    }
+    
+    public static Meal[] getMenu()
+    {
+        return Menu;
+    }
+    
+    public static Meal getTodaysMenu()
+    {
+        return Menu[getDay()];
+    }
+    
+    public static void printTodaysMenu()
     {
 
         Meal men = Menu[getDay()];
         System.out.print(men.getMenu());
-        if(image == 1)
-        {
-            ShowMeal f = new ShowMeal(getShortMeal(men.Fish));
-            ShowMeal m = new ShowMeal(getShortMeal(men.Meat));
-            f.start();
-            m.start();
-        }
             
     }
     
-    private static void printWeekMenu()
+    public static void printWeekMenu()
     {
         for(int i = 0; i < Menu.length; i++)
         {
@@ -89,14 +82,12 @@ public class App
         String dayM = "";
         for(int i = 0; i < es.size() ; i++)
         { 
-                Menu[i] = new Meal();
+                
                 Element e2 = es.get(i).getElementsByClass("field-label").get(0);
                 Element fish = e2.nextElementSibling();
                 Element meat = fish.nextElementSibling();
-                                
-                Menu[i].Day = e2.text();
-                Menu[i].Fish = fish.text();
-                Menu[i].Meat= meat.text();
+                
+                Menu[i] = new Meal(e2.text(),fish.text(),meat.text());
                 
         }
     }
@@ -138,6 +129,7 @@ public class App
     
     private static String getShortMeal(String s)
     {
+        s = s.replaceAll("[^a-zäöåA-ZÄÖÅ0-9\\s]", " ");
         String[] ss = s.split(" ");
         String res = "";
         int i = 0;
@@ -157,16 +149,34 @@ public class App
         return res;
     }
 
-    private static class Meal
+    public static class Meal
     {
         public String Day;
         public String Meat;
         public String Fish;
         
+        public Meal(String d, String m, String f )
+        {
+            Day = d;
+            Meat = m;
+            Fish = f; 
+        }
         
         public String getMenu()
         {
             return Day +"\n\nFisk:\n" + Fish +"\n\nKött:\n"+ Meat + "\n\n";
         }
+        
+        public String getShortFish()
+        {
+            return getShortMeal(Fish);
+        }        
+        
+        public String getShortMeat()
+        {
+            return getShortMeal(Meat);
+        }
+        
+        
     }
 }
