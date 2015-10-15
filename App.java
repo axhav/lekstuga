@@ -13,29 +13,31 @@ import java.lang.Thread;
 
 public class App
 {
+    private static Meal[] Menu;
     
     public static void main(String[] args) {
+        Menu = new Meal[5];
         try{
             Document doc = Jsoup.connect("http://butlercatering.se/einstein").get();
-            
+            getMenu(doc);
             int done = 0;
             
             for(String s : args)
             {
                 if(s.equals("-w") && done == 0)
                 {
-                    System.out.println(getWeekMenu(doc));
+                    printWeekMenu();
                     done = 1;
                 }
                 if(s.equals("-i") && done == 0)
                 {
-                    System.out.println(getTodaysMenu(doc,1));
+                    printTodaysMenu(1);
                     done = 1;
                 }
             }
             if(done == 0)
             {
-                System.out.println(getTodaysMenu(doc,0));
+                printTodaysMenu(0);;
             }
             
         }
@@ -52,59 +54,51 @@ public class App
         
     }
     
-    private static String getTodaysMenu(Document d,int image)
+    private static void printTodaysMenu(int image)
     {
-        
-        Elements es = d.getElementsByClass("field-day");
-        for(Element e: es)
+
+        Meal men = Menu[getDay()];
+        System.out.print(men.getMenu());
+        if(image == 1)
         {
-            Element e2 = e.getElementsByClass("field-label").get(0);
-            if(weekdayToNr(e2.text())== getDay() )
-            {
-                Element fish = e2.nextElementSibling();
-                Element meat = fish.nextElementSibling();
-                
-                System.out.println(e2.text()+ "\n");
-                System.out.println("Fisk:");
-                System.out.println(fish.text()+ "\n");
-                System.out.println("Kött:");
-                System.out.println(meat.text() + "\n");
-                
-                if(image == 1)
-                {
-                    ShowMeal f = new ShowMeal(getShortMeal(fish.text()));
-                    ShowMeal m = new ShowMeal(getShortMeal(meat.text()));
-                    f.start();
-                    m.start();
-                }
-            }
-            
+            ShowMeal f = new ShowMeal(getShortMeal(men.Fish));
+            ShowMeal m = new ShowMeal(getShortMeal(men.Meat));
+            f.start();
+            m.start();
         }
-        return "";
+            
     }
     
-    private static String getWeekMenu(Document d)
+    private static void printWeekMenu()
+    {
+        for(int i = 0; i < Menu.length; i++)
+        {
+            if(i == getDay())
+            {
+                System.out.print("=>");
+            }
+            System.out.println(Menu[i].getMenu());
+            
+            System.out.println("---------------------------------\n\n");
+        }
+    }
+    
+    private static void getMenu(Document d)
     {
         Elements es = d.getElementsByClass("field-day");
-        for(Element e: es)
+        String dayM = "";
+        for(int i = 0; i < es.size() ; i++)
         { 
-                Element e2 = e.getElementsByClass("field-label").get(0);
+                Menu[i] = new Meal();
+                Element e2 = es.get(i).getElementsByClass("field-label").get(0);
                 Element fish = e2.nextElementSibling();
                 Element meat = fish.nextElementSibling();
-                if(weekdayToNr(e2.text())== getDay() )
-                {
-                    System.out.print("=>");
-                }
-                System.out.println(e2.text()+ "\n");
-                System.out.println("Fisk:");
-                System.out.println(fish.text()+ "\n");
-                System.out.println("Kött:");
-                System.out.println(meat.text() + "\n");
-                System.out.println("---------------------------------\n\n");
-                
+                                
+                Menu[i].Day = e2.text();
+                Menu[i].Fish = fish.text();
+                Menu[i].Meat= meat.text();
                 
         }
-        return "";
     }
     
     private static int getDay()
@@ -112,11 +106,11 @@ public class App
         Calendar c = Calendar.getInstance();
         if(c.get(Calendar.HOUR_OF_DAY) >= 13)
         {
-            return c.get(Calendar.DAY_OF_WEEK);
+            return c.get(Calendar.DAY_OF_WEEK)-1;
         }
         else
         {
-            return c.get(Calendar.DAY_OF_WEEK)-1;
+            return c.get(Calendar.DAY_OF_WEEK)-2;
         }
         
         
@@ -163,4 +157,16 @@ public class App
         return res;
     }
 
+    private static class Meal
+    {
+        public String Day;
+        public String Meat;
+        public String Fish;
+        
+        
+        public String getMenu()
+        {
+            return Day +"\n\nFisk:\n" + Fish +"\n\nKött:\n"+ Meat + "\n\n";
+        }
+    }
 }

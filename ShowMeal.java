@@ -61,6 +61,7 @@ class ShowMeal extends Thread
         try {
             URL url = new URL(path);
             image = ImageIO.read(url);
+            image = image.getScaledInstance(400, 400, Image.SCALE_DEFAULT);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,7 +73,7 @@ class ShowMeal extends Thread
         JLabel label = new JLabel(new ImageIcon(image));
         JLabel text = new JLabel();
         frame.add(label);
-        frame.pack();
+        //frame.pack();
         frame.setVisible(true);
     }
     
